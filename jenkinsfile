@@ -1,0 +1,38 @@
+pipeline {
+    agent any
+    environment {
+        DOCKER_CREDENTIALS_ID = 'docker-credentials-id'
+        DOCKER_SERVER = 'docker-server-ip'
+        ANSIBLE_INVENTORY = '/path/to/ansible/inventory'
+    }
+    stages {
+        stage('Checkout') {
+            steps {
+                git url: 'https://github.com/your-repo.git', branch: 'main'
+            }
+        }
+        stage('Build Docker Image') {
+            steps {
+                script {
+                    docker.build('your-image-name')
+                }
+            }
+        }
+        stage('Push Docker Image') {
+            steps {
+                script {
+                    docker.withRegistry('', DOCKER_CREDENTIALS_ID) {
+                        docker.image('your-image-name').push('latest')
+                    }
+                }
+            }
+        }
+        stage('Deploy with Ansible') {
+            steps {
+                ansiblePlaybook credentialsId: 'ansible-credentials-id',
+                               inventory: ANSIBLE_INVENTORY,
+                               playbook: 'deploy.yml'
+            }
+        }
+    }
+}
