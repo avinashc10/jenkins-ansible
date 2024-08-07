@@ -2,7 +2,7 @@ pipeline {
     agent any
     environment {
         DOCKER_CREDENTIALS_ID = 'docker-credentials-id'
-        DOCKER_SERVER = 'docker-server-ip'
+        DOCKER_SERVER = '34.233.126.251'
         ANSIBLE_INVENTORY = '/path/to/ansible/inventory'
     }
     stages {
